@@ -1,0 +1,155 @@
+function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
+  var trackerCookieName  = "xsyTcookie";
+  var xsyCookieName = "xsyCookie";
+  var isNew = false;
+  var requstCount = 0;
+
+  function getSpCookie(cookieName, appID) {
+    var matcher;
+    console.log(appID)
+    if(appID == undefined){
+      matcher = new RegExp(cookieName + 'id\\.[0-9a-z]+=([0-9a-z\-]+).*?');
+    }
+    else{
+      matcher = new RegExp(cookieName + 'id\\.' + appID + '=([^;]+);?');
+    }
+    var match = document.cookie.match(matcher);
+    console.log(document.cookie)
+    console.log(match)
+    if (match && match[1])
+      return match[1].split()[0];
+    else
+      return null;
+  }
+
+  function getLead(isNew, cookie, appId){
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() {
+      console.log('state changed')
+      console.log(xmlHttp.readyState)
+      console.log(xmlHttp.status)
+      if(xmlHttp.readyState == 4){
+        if(xmlHttp.status == 200){
+          var leadID = xmlHttp.responseText;
+          window.snowplow('setUserId', leadID);
+          document.cookie = xsyCookieName + "id." + appID + "=" + leadID + ";max-age=63072000";
+          console.log("get leadID=" + leadID)
+        }
+        else{
+          console.log("somthing wrong")
+          console.log("leadid=" + xmlHttp.responseText)
+          if(requstCount < 3){
+            console.log('count=' + requstCount)
+            requstCount += 1
+            setTimeout(function(){
+              xmlHttp.open('GET', LeadURI + 'isnew=' + isNew + '&ck=' + cookie + '&tid=' + appId, true);
+              xmlHttp.send(null);
+            }, 2000)
+          }
+        }
+      }
+    }
+
+    xmlHttp.open('GET', LeadURI + 'isnew=' + isNew + '&ck=' + cookie + '&tid=' + appId, true);
+    xmlHttp.send(null);
+  }
+
+  function setUserID(){
+    if(isNew){
+      spCookie = getSpCookie(trackerCookieName);
+      getLead(isNew, spCookie, appID);
+    }
+  }
+
+  function pageHeight(){
+    return Math.max(document.body.scrollHeight,
+                     document.documentElement.scrollHeight,
+                     document.body.offsetHeight,
+                     document.documentElement.offsetHeight,
+                     document.documentElement.clientHeight);
+  }
+
+  function windowHeight(){
+    return Math.max(document.documentElement.clientHeight,
+                    window.innerHeight);
+  }
+
+  //----------------------------------------------------------------
+  (function(p,l,o,w,i,n,g){if(!p[i]){p.GlobalSnowplowNamespace=p.GlobalSnowplowNamespace||[];p.GlobalSnowplowNamespace.push(i);p[i]=function(){(p[i].q=p[i].q||[]).push(arguments)};p[i].q=p[i].q||[];n=l.createElement(o);g=l.getElementsByTagName(o)[0];
+    //n.async = 1;
+    n.src=w;n.onload=setUserID;g.parentNode.insertBefore(n,g)}}(window,document,"script", spURL,"snowplow"));
+
+  window.snowplow('newTracker', 'myTracker111', reportSubmitServer, { // Initialise a tracker
+    encodeBase64: false, // Default is true
+    appId: appID, // Site ID can be anything you want. Set it if you're tracking more than one site in this account
+    cookieName: trackerCookieName, // This is the cookie file name
+    stateStorageStrategy: "cookie",
+    userFingerprint: false,
+    //post: true,
+  });
+
+  var xsyCookie = getSpCookie(xsyCookieName, appID);
+
+  if(xsyCookie == null){
+    console.log("no cookie")
+    isNew = true;
+    xsyCookie = "noCookie"
+    window.snowplow('setUserId', '');
+  }
+  else{
+    isNew = false;
+    window.snowplow('setUserId', xsyCookie);
+  }
+
+  window.snowplow('enableActivityTracking', 30, 30);
+  window.snowplow('trackPageView',null,'',
+    function() {
+      return {
+          pageHeight: (pageHeight()),
+          viewHeight: (windowHeight())
+      };
+    }
+  );
+
+  window.addEventListener("load", function(event){
+    //window.snowplow('enableLinkClickTracking', {'blacklist': ['barred', 'untracked']});
+    //window.snowplow('enableFormTracking');
+
+    var elementsOver = document.getElementsByClassName('trackEnter');
+
+    for(i=0; i < elementsOver.length; i++){
+      //elementsOver[i].addEventListener('mouseover', function(event){
+      elementsOver[i].addEventListener('mouseenter', function(event){
+        console.log(event.target)
+        window.snowplow('trackStructEvent', 'button', 'enter', event.target.id, '', '');
+      });
+
+      elementsOver[i].addEventListener('mouseleave', function(event){
+        window.snowplow('trackStructEvent', 'button', 'leave', event.target.id, '', '');
+      });
+    }
+
+    var elementsClick = document.getElementsByClassName('trackClick');
+    for(i=0; i < elementsClick.length; i++){
+      elementsClick[i].addEventListener('click', function(event){
+        window.snowplow('trackStructEvent', 'button', 'click', event.target.url, '', '');
+      });
+    }
+
+    var elementsVideo = document.getElementsByClassName('trackVideo');
+    for(i=0; i < elementsVideo.length; i++){
+      elementsVideo[i].addEventListener('play', function(event){
+        window.snowplow('trackStructEvent', 'video', 'play', event.target.id, event.target.src, '');
+      });
+
+      elementsVideo[i].addEventListener('pause', function(event){
+        window.snowplow('trackStructEvent', 'video', 'pause', event.target.id, event.target.src, '');
+      });
+    }
+
+    //window.addEventListener('scroll', function(){
+    //  maxRatio = Math.max((window.scrollY + windowHeight()) / pageHeight(), maxRatio)
+    //  console.log(maxRatio);
+    //});
+  });
+};
