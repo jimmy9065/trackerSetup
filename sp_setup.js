@@ -1,9 +1,15 @@
 function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
-  var trackerCookieName  = "xsyTcookie";
-  var xsyCookieName = "xsyCookie";
+  var trackerCookieName  = "xsyTcookie";//Tracker's cookie name
+  var xsyCookieName = "xsyCookie";//XSY's cookie that is uesd to store the leadID
   var isNew = false;
   var requstCount = 0;
-
+  
+  //*********************************************************
+  //
+  // Extrack the cookie content. If an appID is provided, it
+  // will extract the leadID from the cookie.
+  //
+  //*********************************************************
   function getSpCookie(cookieName, appID) {
     var matcher;
     console.log(appID)
@@ -22,6 +28,13 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
       return null;
   }
 
+  //*********************************************************
+  //
+  // Send GET request to retrieve the leadID
+  // For the sever side, because this is an ajax request
+  // CORS must be allowed
+  //
+  //*********************************************************
   function getLead(isNew, cookie, appId){
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function() {
@@ -54,6 +67,13 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
     xmlHttp.send(null);
   }
 
+  //*********************************************************
+  //
+  // callback function after sp.js is loaded.
+  // If there is no XSY cookie exists, it will use getLead
+  // to request a LeadID
+  //
+  //*********************************************************
   function setUserID(){
     if(isNew){
       spCookie = getSpCookie(trackerCookieName);
@@ -61,6 +81,12 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
     }
   }
 
+  //*********************************************************
+  //
+  // Return Page Hight and ViewPort Hight dynamicaly,
+  // in case the webpage is dynamicaly.
+  //
+  //*********************************************************
   function pageHeight(){
     return Math.max(document.body.scrollHeight,
                      document.documentElement.scrollHeight,
@@ -75,21 +101,28 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
   }
 
   //----------------------------------------------------------------
-  (function(p,l,o,w,i,n,g){if(!p[i]){p.GlobalSnowplowNamespace=p.GlobalSnowplowNamespace||[];p.GlobalSnowplowNamespace.push(i);p[i]=function(){(p[i].q=p[i].q||[]).push(arguments)};p[i].q=p[i].q||[];n=l.createElement(o);g=l.getElementsByTagName(o)[0];
-    //n.async = 1;
-    n.src=w;n.onload=setUserID;g.parentNode.insertBefore(n,g)}}(window,document,"script", spURL,"snowplow"));
+  
+  //Loading snowplow tracker js file
+  (function(p,l,o,w,i,n,g){if(!p[i]){p.GlobalSnowplowNamespace=p.GlobalSnowplowNamespace||[];p.GlobalSnowplowNamespace.push(i);p[i]=function(){(p[i].q=p[i].q||[]).push(arguments)};p[i].q=p[i].q||[];n=l.createElement(o);g=l.getElementsByTagName(o)[0];n.async = 1;n.src=w;n.onload=setUserID;g.parentNode.insertBefore(n,g)}}(window,document,"script", spURL,"snowplow"));
 
+  //Setup a new tracker named my myTracker111, using cookie to cache the report
+  //Using GET request to send report
   window.snowplow('newTracker', 'myTracker111', reportSubmitServer, { // Initialise a tracker
     encodeBase64: false, // Default is true
     appId: appID, // Site ID can be anything you want. Set it if you're tracking more than one site in this account
     cookieName: trackerCookieName, // This is the cookie file name
     stateStorageStrategy: "cookie",
     userFingerprint: false,
-    //post: true,
+    //post: true, //set it true to use post to send report
   });
 
+  // Check if this user already has leadID stored in the cookie
   var xsyCookie = getSpCookie(xsyCookieName, appID);
 
+  // If the user has a LeadID, just set userId = LeadID
+  // If the user is new(anonymouse), set isNew to true, and the callback
+  // function that loads sp.js will send a request to get the LeadID
+  // We assume loading sp.js happens far later than this part.
   if(xsyCookie == null){
     console.log("no cookie")
     isNew = true;
@@ -101,7 +134,11 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
     window.snowplow('setUserId', xsyCookie);
   }
 
+  //Enable pageping event tracking
   window.snowplow('enableActivityTracking', 30, 30);
+  //Enable pageview event tracking.
+  //And send the realtime page height and viewport height with the report
+  //Note the pageview event must be set after the paging ping event.
   window.snowplow('trackPageView',null,'',
     function() {
       return {
@@ -111,14 +148,17 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
     }
   );
 
+  //Configure the tracking of 'trackEnter', 'trackClick' and 'trackVideo' event.
+  //Notice the eventlistener only set after the page is loaded(window load event).
+  //So if the class name is added after the load event, including create a new
+  //element with that class name, it won't be tracked.
   window.addEventListener("load", function(event){
-    //window.snowplow('enableLinkClickTracking', {'blacklist': ['barred', 'untracked']});
-    //window.snowplow('enableFormTracking');
 
+    //If the element has a class name 'trackEnter', the mouseenter and mouseleave
+    //event will be listened and a report will be sent if it is triggered.
     var elementsOver = document.getElementsByClassName('trackEnter');
 
     for(i=0; i < elementsOver.length; i++){
-      //elementsOver[i].addEventListener('mouseover', function(event){
       elementsOver[i].addEventListener('mouseenter', function(event){
         console.log(event.target)
         window.snowplow('trackStructEvent', 'button', 'enter', event.target.id, '', '');
@@ -129,13 +169,17 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
       });
     }
 
+    // If the element has a class name 'trackClick', the click event will be
+    // listened and a report will be sent if it is triggered.
     var elementsClick = document.getElementsByClassName('trackClick');
     for(i=0; i < elementsClick.length; i++){
       elementsClick[i].addEventListener('click', function(event){
-        window.snowplow('trackStructEvent', 'button', 'click', event.target.url, '', '');
+        window.snowplow('trackStructEvent', 'button', 'click', event.target.id, '', '');
       });
     }
 
+    // If a Video element or a Audio event has a name 'trackVideo', the play and pause
+    // event will be sent to listened. 
     var elementsVideo = document.getElementsByClassName('trackVideo');
     for(i=0; i < elementsVideo.length; i++){
       elementsVideo[i].addEventListener('play', function(event){
@@ -147,9 +191,6 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
       });
     }
 
-    //window.addEventListener('scroll', function(){
-    //  maxRatio = Math.max((window.scrollY + windowHeight()) / pageHeight(), maxRatio)
-    //  console.log(maxRatio);
-    //});
+    // To add more event tracking function
   });
 };
