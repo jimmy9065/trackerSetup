@@ -3,9 +3,12 @@
 This Javascript code is aim to help user to deploy the snowplow-js-tracker on a website. 
 
 ## Setup
-1. Uglify the js code(option)
+1. Uglify the js code(option but recommended)
+Run the following commend(requires node.js environment)
 ```
-uglify sp_setup.js > bundle.js
+npm install -g grunt
+npm install
+grunt
 ```
 2. Add this js snipt to the header of the web pages.
 ```
