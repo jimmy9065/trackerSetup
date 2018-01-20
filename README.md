@@ -10,7 +10,7 @@ uglify sp_setup.js > bundle.js
 2. Add this js snipt to the header of the web pages.
 ```
 <script type="text/javascript">
-(!function(t,r,e,c,i,p,s){setupScript=doc.createElement("script"),firstScript=doc.getElementsByTagName("script")[0],scriptParent=firstScript.parentNode,scriptParent.insertBefore(setupScript,firstScript),setupScript.async=1,setupScript.onload=function(){setupTracker(t,r,c,i,p,s)},setupScript.src=e}(window, document, 'path/to/bundle.js/or/sp_setup.js', 'path/to/sp.js', 'path/to/uid/server', 'path/to/collector/server', 'appID'));
+(!function(t,r,e,c,i,p,s){var setupScript=r.createElement("script");firstScript=r.getElementsByTagName("script")[0];var scriptParent=firstScript.parentNode;scriptParent.insertBefore(setupScript,firstScript);setupScript.async=1;setupScript.onload=function(){setupTracker(t,r,c,i,p,s)},setupScript.src=e}(window, document, 'path/to/bundle.js/or/sp_setup.js', 'path/to/sp.js', 'path/to/uid/server', 'path/to/collector/server', 'appID'));
 </script> 
 ```
 The following information need to be provided:
