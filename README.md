@@ -10,7 +10,7 @@ npm install -g grunt
 npm install
 grunt
 ```
-If you don't want to install nodejs and grunt, but still want to use this script. You can use either 'src/sp_setup.js' or 'dist/bundle.js' which is a uglyfied version of sp_setup.js. But the version of the bundle.js is not gaurenteed to be the latest.
+  If you want to use this script without install nodejs and grunt, you can use either 'src/sp_setup.js' or 'dist/bundle.js', which is an uglyfied version of sp_setup.js. However, the version of the bundle.js is not guaranteed to be the latest.  
 2. Add this js snipt to the header of the web pages.
 ```
 <script type="text/javascript">
