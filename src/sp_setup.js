@@ -12,7 +12,7 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
   //*********************************************************
   function getSpCookie(cookieName, appID) {
     var matcher;
-    console.log(appID)
+    console.log(appID);
     if(appID == undefined){
       matcher = new RegExp(cookieName + 'id\\.[0-9a-z]+=([0-9a-z\-]+).*?');
     }
@@ -20,8 +20,8 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
       matcher = new RegExp(cookieName + 'id\\.' + appID + '=([^;]+);?');
     }
     var match = document.cookie.match(matcher);
-    console.log(document.cookie)
-    console.log(match)
+    console.log(document.cookie);
+    console.log(match);
     if (match && match[1])
       return match[1].split()[0];
     else
@@ -38,26 +38,26 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
   function getLead(isNew, cookie, appId){
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function() {
-      console.log('state changed')
-      console.log(xmlHttp.readyState)
-      console.log(xmlHttp.status)
+      console.log('state changed');
+      console.log(xmlHttp.readyState);
+      console.log(xmlHttp.status);
       if(xmlHttp.readyState == 4){
         if(xmlHttp.status == 200){
           var leadID = xmlHttp.responseText;
           window.snowplow('setUserId', leadID);
           document.cookie = xsyCookieName + "id." + appID + "=" + leadID + ";max-age=63072000";
-          console.log("get leadID=" + leadID)
+          console.log("get leadID=" + leadID);
         }
         else{
-          console.log("somthing wrong")
-          console.log("leadid=" + xmlHttp.responseText)
+          console.log("somthing wrong");
+          console.log("leadid=" + xmlHttp.responseText);
           if(requstCount < 3){
-            console.log('count=' + requstCount)
-            requstCount += 1
+            console.log('count=' + requstCount);
+            requstCount += 1;
             setTimeout(function(){
               xmlHttp.open('GET', LeadURI + 'isnew=' + isNew + '&ck=' + cookie + '&tid=' + appId, true);
               xmlHttp.send(null);
-            }, 2000)
+            }, 2000);
           }
         }
       }
@@ -124,9 +124,9 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
   // function that loads sp.js will send a request to get the LeadID
   // We assume loading sp.js happens far later than this part.
   if(xsyCookie == null){
-    console.log("no cookie")
+    console.log("no cookie");
     isNew = true;
-    xsyCookie = "noCookie"
+    xsyCookie = "noCookie";
     window.snowplow('setUserId', '');
   }
   else{
@@ -160,7 +160,7 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
 
     for(i=0; i < elementsOver.length; i++){
       elementsOver[i].addEventListener('mouseenter', function(event){
-        console.log(event.target)
+        console.log(event.target);
         window.snowplow('trackStructEvent', 'button', 'enter', event.target.id, '', '');
       });
 
