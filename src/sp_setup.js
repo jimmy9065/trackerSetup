@@ -191,6 +191,15 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
       });
     }
 
+    var elementsLink = document.getElementsByClassName('trackLink');
+    for(i=0; i < elementsLink.length; i++){
+      elementsLink[i].addEventListener('click', function(event){
+        var target = event.currentTarget;
+        window.snowplow('trackStructEvent', 'link', 'download', target.id, target.href, '');
+        console.log(event.currentTarget);
+      }, false);
+    }
+
     // To add more event tracking function
   });
 };
