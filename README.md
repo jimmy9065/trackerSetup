@@ -39,7 +39,7 @@ This Javascript code is aim to help user to deploy the snowplow-js-tracker on a 
       * trackEnter: Track if the user's mouse is hover on that element or leave it.
       * trackClick: Track if the user click on that element.
       * trackVideo: Track if the user play or pause the video.  
-      * trackLink : Track if the user click on a link.(This is different from trackClick, because it also carries the link's url)
+      * trackLink : Track if the user click on a link.(This is different from trackClick, because it also carries the link's url and the file type)
       
 5. **Send the report at any place you want without setting the class name.**  
     This is the original way for snowplow user to send the tracking report. You can lear more information from this [link](https://github.com/snowplow/snowplow/wiki/2-Specific-event-tracking-with-the-Javascript-tracker).

@@ -116,6 +116,8 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
     //post: true, //set it true to use post to send report
   });
 
+  window.snowplow('setReferrerUrl', document.referred || 'n/a');
+
   // Check if this user already has leadID stored in the cookie
   var xsyCookie = getSpCookie(xsyCookieName, appID);
 
@@ -195,7 +197,16 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
     for(i=0; i < elementsLink.length; i++){
       elementsLink[i].addEventListener('click', function(event){
         var target = event.currentTarget;
-        window.snowplow('trackStructEvent', 'link', 'download', target.id, target.href, '');
+        var matcher = new RegExp('\.([a-zA-Z0-9]+)$');
+        var matchs = target.href.match(matcher);
+        var type = 'n/a'
+        if(matchs && matchs[1]){
+          type = matchs[1];
+          console.log('finded');
+          console.log(matchs);
+        }
+        console.log(type);
+        window.snowplow('trackStructEvent', 'link', 'download', target.id, target.href, type);
         console.log(event.currentTarget);
       }, false);
     }
