@@ -81,6 +81,41 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
     }
   }
 
+    //*********************************************************
+  //
+  // Parse the UTM parameters
+  // return a json object.
+  // IF the url doesn't has any utm parameters,
+  // isExist will be false, and no other parameters
+  // will be attached.
+  //
+  //*********************************************************
+  function UTMParser() {
+    var params = [
+      'utm_source',
+      'utm_medium',
+      'utm_tern',
+      'utm_content',
+      'utm_campaign',
+    ];
+    var res = {'isExist':false, params:{targeURL:document.URL}};
+
+    for(idx in params){
+      var matcher = new RegExp(params[idx] + '=([^&]*)');
+      var temp = matcher.exec(document.URL);
+
+      console.log(params[idx]);
+      if(temp && temp[1]){
+        res.isExist = true;
+        res.params[params[idx]] = temp[1];
+        console.log(temp[1]);
+      }
+    }
+
+    console.log(res);
+    return res;
+  }
+
   //*********************************************************
   //
   // Return Page Hight and ViewPort Hight dynamicaly,
@@ -149,6 +184,17 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
       };
     }
   );
+
+  var utmParams = UTMParser();
+
+  if(utmParams.isExist){
+    window.snowplow('trackSelfDescribingEvent', utmParams.params);
+  }
+  else{
+    window.snowplow('trackSelfDescribingEvent',
+      {'targetURL': UTMParser.params.targeURL}
+    );
+  }
 
   //Configure the tracking of 'trackEnter', 'trackClick' and 'trackVideo' event.
   //Notice the eventlistener only set after the page is loaded(window load event).
