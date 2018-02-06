@@ -98,7 +98,7 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
       'utm_content',
       'utm_campaign',
     ];
-    var res = {'isExist':false, params:{targeURL:document.URL}};
+    var res = {};
 
     for(idx in params){
       var matcher = new RegExp(params[idx] + '=([^&]*)');
@@ -106,8 +106,7 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
 
       console.log(params[idx]);
       if(temp && temp[1]){
-        res.isExist = true;
-        res.params[params[idx]] = temp[1];
+        res[params[idx]] = temp[1];
         console.log(temp[1]);
       }
     }
@@ -185,16 +184,7 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
     }
   );
 
-  var utmParams = UTMParser();
-
-  if(utmParams.isExist){
-    window.snowplow('trackSelfDescribingEvent', utmParams.params);
-  }
-  else{
-    window.snowplow('trackSelfDescribingEvent',
-      {'targetURL': UTMParser.params.targeURL}
-    );
-  }
+  window.snowplow('trackSelfDescribingEvent', UTMParser());
 
   //Configure the tracking of 'trackEnter', 'trackClick' and 'trackVideo' event.
   //Notice the eventlistener only set after the page is loaded(window load event).
