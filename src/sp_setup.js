@@ -98,7 +98,7 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
       'utm_content',
       'utm_campaign',
     ];
-    var res = {};
+    var res = {'type':'UTM'};
 
     for(idx in params){
       var matcher = new RegExp(params[idx] + '=([^&]*)');
