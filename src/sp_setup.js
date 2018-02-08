@@ -190,8 +190,8 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
   //Notice the eventlistener only set after the page is loaded(window load event).
   //So if the class name is added after the load event, including create a new
   //element with that class name, it won't be tracked.
-  window.addEventListener("load", function(event){
-
+  addListener = function(){
+    console.log("set up listener");
     //If the element has a class name 'trackEnter', the mouseenter and mouseleave
     //event will be listened and a report will be sent if it is triggered.
     var elementsOver = document.getElementsByClassName('trackEnter');
@@ -248,5 +248,11 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
     }
 
     // To add more event tracking function
+  };
+
+  window.addEventListener("load", function(event) {
+    console.log("start the count");
+    setTimeout(addListener, 1500);
   });
+    
 };
