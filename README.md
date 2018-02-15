@@ -10,7 +10,7 @@ This Javascript code is aim to help user to deploy the snowplow-js-tracker on a 
     npm install
     grunt
     ```
-    If you want to use this script without installing nodejs and grunt, you can use either 'src/sp_setup.js' or 'dist/bundle.js', which is an uglyfied version of sp_setup.js. However, the version of the bundle.js is not guaranteed to be the latest.  
+    If you want to use this script without installing nodejs and grunt, you can use either 'dist/bundle.js' or 'dist/bundle.min.js', which is an prudction version of bundle.js. However, the version of the file in dist not guaranteed to be the latest.  
 2. **Add this js snipt to the header of the web pages.**
     ```
     <script type="text/javascript">
@@ -43,6 +43,11 @@ This Javascript code is aim to help user to deploy the snowplow-js-tracker on a 
       
 5. **Send the report at any place you want without setting the class name.**  
     This is the original way for snowplow user to send the tracking report. You can lear more information from this [link](https://github.com/snowplow/snowplow/wiki/2-Specific-event-tracking-with-the-Javascript-tracker).
+
+6. Customize pageTrack rule.  
+   If you only want to trigger pageview event for certain pages, edit the isTrack function in the src/rule.js.  
+   isTrack function take document.location as parameters. Implement your own rules and return true if you want this page to be tracked or false if you don't.
+   You need to run grunt again after you edit rule.js. 
 
 Other information like the protocal for those report can be found on [snowplow's wiki page](https://github.com/snowplow/snowplow/wiki/snowplow-tracker-protocol).
 

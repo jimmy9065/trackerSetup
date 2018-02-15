@@ -175,14 +175,17 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
   //Enable pageview event tracking.
   //And send the realtime page height and viewport height with the report
   //Note the pageview event must be set after the paging ping event.
-  window.snowplow('trackPageView',null,'',
-    function() {
-      return {
-          pageHeight: (pageHeight()),
-          viewHeight: (windowHeight())
-      };
-    }
-  );
+  
+  if(isTrack(document.location)){
+    window.snowplow('trackPageView',null,'',
+      function() {
+        return {
+            pageHeight: (pageHeight()),
+            viewHeight: (windowHeight())
+        };
+      }
+    );
+  }
 
   window.snowplow('trackSelfDescribingEvent', UTMParser());
 
