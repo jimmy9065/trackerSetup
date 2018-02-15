@@ -2,10 +2,19 @@ module.exports = function (grunt) {
 var pkg = grunt.file.readJSON('package.json');
   grunt.initConfig({
     pkg: pkg,
+    concat: {
+      options: {
+        separator: ';',
+      },
+      dist: {
+        src: ['src/sp_setup.js', 'src/rule.js'],
+        dest: 'dist/bundle.js',
+      },
+    },
     removelogging:{
       build: {
-        src:'src/sp_setup.js',
-        dest:'dist/sp_setup.nolog.js'
+        src:'dist/bundle.js',
+        dest:'dist/bundle.nolog.js'
       },
       options:{
         namespace:['console']
@@ -16,14 +25,15 @@ var pkg = grunt.file.readJSON('package.json');
         banner: '//compressed version of sp_setup.js'
       },
         build:{
-          src: 'dist/sp_setup.nolog.js',
-          dest: 'dist/bundle.js'
+          src: 'dist/bundle.nolog.js',
+          dest: 'dist/bundle.min.js'
         }
     }
   });
   
+  grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-remove-logging')
+  grunt.loadNpmTasks('grunt-remove-logging');
 
-  grunt.registerTask('default', ['removelogging', 'uglify']);
+  grunt.registerTask('default', ['concat', 'removelogging', 'uglify']);
 };
