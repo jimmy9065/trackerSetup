@@ -7,14 +7,14 @@ var pkg = grunt.file.readJSON('package.json');
         separator: ';',
       },
       dist: {
-        src: ['src/sp_setup.js', 'src/rule.js'],
-        dest: 'dist/bundle.js',
+        src: ['./src/sp_setup.js', './src/rule.js', './src/managerApi.js'],
+        dest: './dist/bundle.js',
       },
     },
     removelogging:{
       build: {
-        src:'dist/bundle.js',
-        dest:'dist/bundle.nolog.js'
+        src:'./dist/bundle.js',
+        dest:'./dist/bundle.nolog.js'
       },
       options:{
         namespace:['console']
@@ -25,8 +25,8 @@ var pkg = grunt.file.readJSON('package.json');
         banner: '//compressed version of sp_setup.js'
       },
         build:{
-          src: 'dist/bundle.nolog.js',
-          dest: 'dist/bundle.min.js'
+          src: './dist/bundle.nolog.js',
+          dest: './dist/bundle.min.js'
         }
     }
   });
