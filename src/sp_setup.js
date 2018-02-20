@@ -4,6 +4,9 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
   var isNew = false;
   var requstCount = 0;
   
+  document.xsyGlobal = {};
+  setupTrackVariables();
+
   //*********************************************************
   //
   // Extrack the cookie content. If an appID is provided, it

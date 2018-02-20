@@ -4,6 +4,9 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
   var isNew = false;
   var requstCount = 0;
   
+  document.xsyGlobal = {};
+  setupTrackVariables();
+
   //*********************************************************
   //
   // Extrack the cookie content. If an appID is provided, it
@@ -259,6 +262,58 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
   });
     
 };
+;var addGlobalListener = function(variableName, eventType, tagId) {
+  if(document.xsyGlobal[variableName] == undefined){
+    let handler = {};
+    if(eventType == 'btn')
+      handler.set = function(obj, prop, value){
+        console.log('emit btn signal for ' + )
+      };
+    else if(eventType == 'video'){
+      handler.set = function(obj, prop, value){
+
+      };
+    }
+    else if(eventType == 'form'){
+      handler.set = function(obj, prop, value){
+
+      };
+    }
+    else if(eventType == 'unknown'){
+      handler.set = function(obj, prop, value){
+
+      };
+    }
+    else{
+      handler.set = function(obj, prop, value){
+
+      };
+    }
+
+    document.xsyGlobal[variableName] = new Proxy({}, handler);
+    console.log('added Listener');
+    return true;
+  }
+  else{
+    console.log('adding Listener');
+    return false;
+  }
+}
+
+var removeGlobalListener = function(variableName) {
+  delete document.xsyGlobal[variableName];
+}
+
+var editGlobalListener = function(variableName, eventType, tagId) {
+  if(document.xsyGlobal[variableName] != undefined){
+    console.log('adding Listener')
+    return true;
+  }
+  else{
+    console.log('Listener does not exists')
+    return false;
+  }
+}
 ;//The input of isTrack function is document.location
 //Use any methods you want to decide if this page needed to be track.
 //If this page should be tracked, then return true;
@@ -266,4 +321,8 @@ var isTrack = function(location) {
   console.log("this is add-on js:" + location.pathname);
   //return location.pathname == '/';
   return true;
+}
+
+var setupTrackVariables = function(){
+
 }
