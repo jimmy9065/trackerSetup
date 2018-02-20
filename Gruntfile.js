@@ -7,7 +7,7 @@ var pkg = grunt.file.readJSON('package.json');
         separator: ';',
       },
       dist: {
-        src: ['src/sp_setup.js', 'src/rule.js'],
+        src: ['src/sp_setup.js', 'src/rule.js', 'src/globalTracker.js'],
         dest: 'dist/bundle.js',
       },
     },
@@ -32,7 +32,8 @@ var pkg = grunt.file.readJSON('package.json');
   });
   
   grunt.loadNpmTasks('grunt-contrib-concat');
-  grunt.loadNpmTasks('grunt-contrib-uglify');
+  //grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-uglify-es');
   grunt.loadNpmTasks('grunt-remove-logging');
 
   grunt.registerTask('default', ['concat', 'removelogging', 'uglify']);
