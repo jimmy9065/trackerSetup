@@ -2,3 +2,4 @@ dist/*
 node_modules
 transfer.sh
 *.swp
+package-lock.json
