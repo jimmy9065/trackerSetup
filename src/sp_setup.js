@@ -7,6 +7,8 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
   document.xsyGlobal = {};
   setupTrackVariables();
 
+  document.body.addEventListener('click', function(){console.log("here here");}, true); 
+
   //*********************************************************
   //
   // Extrack the cookie content. If an appID is provided, it
