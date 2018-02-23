@@ -7,8 +7,6 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
   document.xsyGlobal = {};
   setupTrackVariables();
 
-  document.body.addEventListener('click', function(){console.log("here here");}, true); 
-
   //*********************************************************
   //
   // Extrack the cookie content. If an appID is provided, it
@@ -201,8 +199,38 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
   addListener = function(){
     console.log("set up listener");
 
-    document.body.addListener('click', function(event) {
-      console.log(event.target);
+    document.body.addEventListener('click', function(event) {
+      let tId = event.target.id;
+      console.log(tId);
+      if(isTracking(tId)) {
+        let setting = getSetting(tId);
+        let type = setting.type;
+
+        if(type == 'link') {
+          //if the link is stacked together, the id might be incorrect.
+          var target = event.currentTarget;
+          var matcher = new RegExp('\.([a-zA-Z0-9]+)$');
+          var matchs = target.href.match(matcher);
+          var type = 'n/a'
+          if(matchs && matchs[1]){
+            type = matchs[1];
+            console.log('finded');
+            console.log(matchs);
+          }
+          console.log(type);
+          window.snowplow('trackStructEvent', 'link', 'download', target.id, target.href, type);
+          console.log(event.currentTarget);
+          
+        } if(type == 'btn') {
+        let el = document.getElementById(setting.id);
+
+        } if(type == 'form') {
+        let el = document.getElementById(setting.id);
+
+        } else {
+          //unknown type , just ignore it
+        }
+      }
     })
 
     //If the element has a class name 'trackEnter', the mouseenter and mouseleave
