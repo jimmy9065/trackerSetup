@@ -198,6 +198,11 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
   //element with that class name, it won't be tracked.
   addListener = function(){
     console.log("set up listener");
+
+    document.body.addListener('click', function(event) {
+      console.log(event.target);
+    })
+
     //If the element has a class name 'trackEnter', the mouseenter and mouseleave
     //event will be listened and a report will be sent if it is triggered.
     var elementsOver = document.getElementsByClassName('trackEnter');
