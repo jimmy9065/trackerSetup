@@ -1,11 +1,12 @@
 function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
   var trackerCookieName  = "xsyTcookie";//Tracker's cookie name
-  var xsyCookieName = "xsy_mc_tl";//XSY's cookie that is uesd to store the leadID
+  var xsyCookieName = "xsy_mc_";//XSY's cookie that is uesd to store the leadID
   var isNew = false;
   var requstCount = 0;
   
   document.xsyGlobal = {};
-  setupTrackVariables();
+  setupVariableTracker();
+  let dict = setupGlobalTracker();
 
   //*********************************************************
   //
@@ -20,7 +21,7 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
       matcher = new RegExp(cookieName + 'id\\.[0-9a-z]+=([0-9a-z\-]+).*?');
     }
     else{
-      matcher = new RegExp(cookieName + '=([^;]+);?');
+      matcher = new RegExp(cookieName + '[a-z0-9]+=([^;]+);?');
     }
     var match = document.cookie.match(matcher);
     console.log(document.cookie);
@@ -64,10 +65,12 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
       console.log(xmlHttp.status);
       if(xmlHttp.readyState == 4){
         if(xmlHttp.status == 200){
-          var leadID = xmlHttp.responseText;
-          window.snowplow('setUserId', leadID);
-          document.cookie = xsyCookieName + "=" + leadID + ";max-age=63072000";
-          console.log("get leadID=" + leadID);
+          //var leadID = xmlHttp.responseText;
+          let response = JSON.parse(xmlHttp.responseText);
+          console.log('!!!get the cookie set:' + response)
+          document.cookie = xsyCookieName + response.name + "=" + response.value + ";max-age=63072000";
+          console.log("new set cookie = " + xsyCookieName + response.name + "=" + response.value + ";max-age=63072000");
+          window.snowplow('setUserId', getXsyCookie());
         }
         else{
           console.log("somthing wrong");
@@ -168,7 +171,7 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
     cookieName: trackerCookieName, // This is the cookie file name
     stateStorageStrategy: "cookie",
     userFingerprint: false,
-    //post: true, //set it true to use post to send report
+    post: true, //set it true to use post to send report
   });
 
   window.snowplow('setReferrerUrl', document.referred || 'n/a');
@@ -221,9 +224,10 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
     document.body.addEventListener('click', function(event) {
       let tId = event.target.id;
       console.log(tId);
-      if(isTracking(tId)) {
-        let setting = getSetting(tId);
+      let setting = dict.get(tId);
+      if(setting != undefined) {
         let type = setting.type;
+        let element = setting.id;
 
         if(type == 'link') {
           //if the link is stacked together, the id might be incorrect.

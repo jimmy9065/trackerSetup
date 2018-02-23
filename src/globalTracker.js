@@ -58,3 +58,4 @@ var editGlobalListener = function(variableName, eventType, tagId) {
     return false;
   }
 }
+

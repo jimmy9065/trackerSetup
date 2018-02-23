@@ -7,6 +7,18 @@ var isTrack = function(location) {
   return true;
 }
 
-var setupTrackVariables = function(){
+var setupVariableTracker = function(){
 
+}
+
+
+var setupGlobalTrack() {
+  var globalTrackpairs = [];
+  var map = new Map();
+
+  for(idx in globalTrackpairs){
+    map.set(globalTrackpairs[idx].id, globalTrackpairs[idx].setting);
+  }
+
+  return map;
 }
