@@ -1,6 +1,6 @@
 function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
   var trackerCookieName  = "xsyTcookie";//Tracker's cookie name
-  var xsyCookieName = "xsyCookie";//XSY's cookie that is uesd to store the leadID
+  var xsyCookieName = "xsy_mc_tl";//XSY's cookie that is uesd to store the leadID
   var isNew = false;
   var requstCount = 0;
   
@@ -20,7 +20,7 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
       matcher = new RegExp(cookieName + 'id\\.[0-9a-z]+=([0-9a-z\-]+).*?');
     }
     else{
-      matcher = new RegExp(cookieName + 'id\\.' + appID + '=([^;]+);?');
+      matcher = new RegExp(cookieName + '=([^;]+);?');
     }
     var match = document.cookie.match(matcher);
     console.log(document.cookie);
@@ -29,6 +29,24 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
       return match[1].split()[0];
     else
       return null;
+  }
+
+  //*********************************************************
+  //
+  // Extrack all the cookie that start with xsy_
+  //
+  //*********************************************************
+  function getXsyCookie(){
+    let matcher = RegExp(/(xsy_[a-z]+_[a-z]+=[^;]+;)/, 'g');
+    let aCookies = [], sCookies = document.cookie, cookie;
+    console.log('find all the cookies');
+    while((cookie = matcher.exec(sCookies)) != null){
+      console.log(cookie[1]);
+      aCookies.push(cookie[1]);
+    }
+
+    console.log(aCookies.join(''));
+    return aCookies.join('');
   }
 
   //*********************************************************
@@ -48,7 +66,7 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
         if(xmlHttp.status == 200){
           var leadID = xmlHttp.responseText;
           window.snowplow('setUserId', leadID);
-          document.cookie = xsyCookieName + "id." + appID + "=" + leadID + ";max-age=63072000";
+          document.cookie = xsyCookieName + "=" + leadID + ";max-age=63072000";
           console.log("get leadID=" + leadID);
         }
         else{
@@ -170,7 +188,8 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
   }
   else{
     isNew = false;
-    window.snowplow('setUserId', xsyCookie);
+    //add all cookie here
+    window.snowplow('setUserId', getXsyCookie());
   }
 
   //Enable pageping event tracking
