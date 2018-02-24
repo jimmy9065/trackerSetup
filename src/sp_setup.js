@@ -223,38 +223,38 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
 
     document.body.addEventListener('click', function(event) {
       let tId = event.target.id;
-      console.log(tId);
+      console.log('eventId=' + tId);
       let setting = dict.get(tId);
       if(setting != undefined) {
         let type = setting.type;
-        let element = setting.id;
+        let el = document.getElementById(setting.targetId);
 
         if(type == 'link') {
           //if the link is stacked together, the id might be incorrect.
-          var target = event.currentTarget;
-          var matcher = new RegExp('\.([a-zA-Z0-9]+)$');
-          var matchs = target.href.match(matcher);
-          var type = 'n/a'
+          if(el == undefined)
+            return;
+
+          let matcher = new RegExp('\.([a-zA-Z0-9]+)$');
+          let matchs = el.href.match(matcher);
+          let linkType = 'n/a';
           if(matchs && matchs[1]){
-            type = matchs[1];
+            linkType = matchs[1];
             console.log('finded');
             console.log(matchs);
           }
-          console.log(type);
-          window.snowplow('trackStructEvent', 'link', 'download', target.id, target.href, type);
-          console.log(event.currentTarget);
-          
-        } if(type == 'btn') {
-        let el = document.getElementById(setting.id);
-
-        } if(type == 'form') {
-        let el = document.getElementById(setting.id);
-
-        } else {
+          console.log(linkType);
+          window.snowplow('trackStructEvent', 'link', 'download', el.id, el.href, type);
+          console.log(el);
+        }else if(type == 'btn') {
+          window.snowplow('trackStructEvent', 'button', 'click', el.id, '', '');
+        }else if(type == 'video') {
+        window.snowplow('trackStructEvent', 'video', 'play', el.id, el.src, '');
+        }else {
           //unknown type , just ignore it
+          console.log("error: unknown type " + type);
         }
       }
-    })
+    });
 
     //If the element has a class name 'trackEnter', the mouseenter and mouseleave
     //event will be listened and a report will be sent if it is triggered.
@@ -302,7 +302,7 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
         var type = 'n/a'
         if(matchs && matchs[1]){
           type = matchs[1];
-          console.log('finded');
+          console.log('finished');
           console.log(matchs);
         }
         console.log(type);
@@ -318,5 +318,4 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
     console.log("start the count");
     setTimeout(addListener, 1500);
   });
-    
 };
