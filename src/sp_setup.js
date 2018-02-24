@@ -321,3 +321,7 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
     setTimeout(addListener, 1500);
   });
 };
+
+sendFormReport = function(obj) {
+  window.snowplow('trackSelfDescribingEvent', obj);
+};
