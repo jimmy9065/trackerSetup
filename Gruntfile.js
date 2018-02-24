@@ -7,7 +7,7 @@ var pkg = grunt.file.readJSON('package.json');
         separator: ';',
       },
       dist: {
-        src: ['src/sp_setup.js', 'src/globalTracker.js', 'src/rule.js'],
+        src: ['src/sp_setup.js', 'src/config.js'],
         dest: 'dist/bundle.js',
       },
     },

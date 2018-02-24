@@ -1,12 +1,9 @@
 function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
-  var trackerCookieName  = "xsyTcookie";//Tracker's cookie name
-  var xsyCookieName = "xsy_mc_";//XSY's cookie that is uesd to store the leadID
-  var isNew = false;
-  var requstCount = 0;
-  
-  document.xsyGlobal = {};
-  setupVariableTracker();
-  let dict = setupGlobalTracker();
+  let trackerCookieName  = "xsyTcookie";//Tracker's cookie name
+  let xsyCookieName = "xsy_mc_";//XSY's cookie that is uesd to store the leadID
+  let isNew = false;
+  let requstCount = 0;
+  var dict = setupGlobalTracker();
 
   //*********************************************************
   //
@@ -158,6 +155,41 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
                     window.innerHeight);
   }
 
+
+  function globalTracker(event) {
+    let tId = event.target.id;
+    console.log('eventId=' + tId);
+    let setting = dict.get(tId);
+    if(setting != undefined) {
+      let type = setting.type;
+      let el = document.getElementById(setting.targetId);
+
+      if(type == 'link') {
+        //if the element is 'a' and have element stacks on it, both element need to be registered.
+        if(el == undefined)
+          return;
+
+        let matcher = new RegExp('\.([a-zA-Z0-9]+)$');
+        let matchs = el.href.match(matcher);
+        let linkType = 'n/a';
+        if(matchs && matchs[1]){
+          linkType = matchs[1];
+          console.log('finded');
+          console.log(matchs);
+        }
+        console.log(linkType);
+        window.snowplow('trackStructEvent', 'link', 'download', el.id, el.href, type);
+        console.log(el);
+      }else if(type == 'btn') {
+        window.snowplow('trackStructEvent', 'button', 'click', el.id, '', '');
+      }else if(type == 'video') {
+      window.snowplow('trackStructEvent', 'video', 'play', el.id, el.src, '');
+      }else {
+        //unknown type , just ignore it
+        console.log("error: unknown type " + type);
+      }
+    }
+  }
   //----------------------------------------------------------------
   
   //Loading snowplow tracker js file
@@ -221,40 +253,8 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
   addListener = function(){
     console.log("set up listener");
 
-    document.body.addEventListener('click', function(event) {
-      let tId = event.target.id;
-      console.log('eventId=' + tId);
-      let setting = dict.get(tId);
-      if(setting != undefined) {
-        let type = setting.type;
-        let el = document.getElementById(setting.targetId);
-
-        if(type == 'link') {
-          //if the link is stacked together, the id might be incorrect.
-          if(el == undefined)
-            return;
-
-          let matcher = new RegExp('\.([a-zA-Z0-9]+)$');
-          let matchs = el.href.match(matcher);
-          let linkType = 'n/a';
-          if(matchs && matchs[1]){
-            linkType = matchs[1];
-            console.log('finded');
-            console.log(matchs);
-          }
-          console.log(linkType);
-          window.snowplow('trackStructEvent', 'link', 'download', el.id, el.href, type);
-          console.log(el);
-        }else if(type == 'btn') {
-          window.snowplow('trackStructEvent', 'button', 'click', el.id, '', '');
-        }else if(type == 'video') {
-        window.snowplow('trackStructEvent', 'video', 'play', el.id, el.src, '');
-        }else {
-          //unknown type , just ignore it
-          console.log("error: unknown type " + type);
-        }
-      }
-    });
+    //This is for codeless trigger
+    document.body.addEventListener('click', globalTracker, event);
 
     //If the element has a class name 'trackEnter', the mouseenter and mouseleave
     //event will be listened and a report will be sent if it is triggered.
@@ -280,7 +280,7 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
       });
     }
 
-    // If a Video element or a Audio event has a name 'trackVideo', the play and pause
+    // If a Video element or a Audio event has a class name 'trackVideo', the play and pause
     // event will be sent to listened. 
     var elementsVideo = document.getElementsByClassName('trackVideo');
     for(i=0; i < elementsVideo.length; i++){
@@ -293,6 +293,7 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
       });
     }
 
+    //If an a element has a class name trackLink, the click event will be tracked and submit a report with a.href.
     var elementsLink = document.getElementsByClassName('trackLink');
     for(i=0; i < elementsLink.length; i++){
       elementsLink[i].addEventListener('click', function(event){
@@ -314,6 +315,7 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
     // To add more event tracking function
   };
 
+  //Delay 1.5s to let the page fully rendered
   window.addEventListener("load", function(event) {
     console.log("start the count");
     setTimeout(addListener, 1500);
