@@ -1,16 +1,16 @@
-# snowplow-js-tracker deploy code  
+# snowplow-js-tracker wrapper  
 
-This Javascript code is aim to help user to deploy the snowplow-js-tracker on a website. 
+This repo is a wrapper for snowplow-js-tracker.
 
 ## Setup
-1. **Uglify the js code(option but recommended)**
+1. **Remove logs and Uglify the js code(option but recommended)**
     Run the following commend(requires node.js environment)
     ```
     npm install -g grunt
     npm install
     grunt
     ```
-    If you want to use this script without installing nodejs and grunt, you can use either 'dist/bundle.js' or 'dist/bundle.min.js', which is an prudction version of bundle.js. However, the version of the file in dist not guaranteed to be the latest.  
+    If you want to use this script without installing nodejs and grunt, you can use either 'dist/bundle.js'(debug) or 'dist/bundle.min.js'(release). However, the version of the file in dist not guaranteed to be the latest. Also, since I used let and some other ES6 features, you might need to use node>=6.
 2. **Add this js snipt to the header of the web pages.**
     ```
     <script type="text/javascript">
@@ -40,11 +40,21 @@ This Javascript code is aim to help user to deploy the snowplow-js-tracker on a 
       * trackClick: Track if the user click on that element.
       * trackVideo: Track if the user play or pause the video.  
       * trackLink : Track if the user click on a link.(This is different from trackClick, because it also carries the link's url and the file type)
-      
-5. **Send the report at any place you want without setting the class name.**  
+
+5. **Use global click tracker.**  
+   For active webpage, the elements sometimes could be created or removed by ajax. The above methods, however, are designed for static webpage, which created all its elements before the load event is triggered. So in order to track those elements which created afterwards, and also provide some api for the later tagmanager development, one can use the global click tracker. It can track the click event for all those elements that registered under the config.js file.
+   The setup details is in the config file, function 'setupGlobalTracker'. You only need to add content in the 'custom content area'. Also there is a config.example.js file which contains some more specific examples.
+
+6. **Send the report at any place you want without setting the class name.(you should use 4 instead)**  
     This is the original way for snowplow user to send the tracking report. You can lear more information from this [link](https://github.com/snowplow/snowplow/wiki/2-Specific-event-tracking-with-the-Javascript-tracker).
 
-6. **Customize pageTrack rule.**  
+7. **Setup whitelist/blacklist for pageview trackers**
+    For some cases, you might not need to track all the pages on the websites. In those cases, you can use isTrack() to decide if the page should be tracked.  
+    In default, the function return true for all locations, which means it doesn't has any rules on pageview tracking, and it will track all the pages on the website.
+    You can use either hash map or Regex to create a whitelist or blacklist to setup such rules. If the function return true, such page will trigger pageview report, and it will be muted if the function return false.
+    Note that the parameter for isTrack() is a location not an url.
+
+7. **Customize pageTrack rule.**  
    If you only want to trigger pageview event for certain pages, edit the isTrack function in the src/rule.js.  
    isTrack function take document.location as parameters. Implement your own rules and return true if you want this page to be tracked or false if you don't.
    You need to run grunt again after you edit rule.js. 
