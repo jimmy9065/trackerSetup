@@ -54,7 +54,10 @@ This repo is a wrapper for snowplow-js-tracker.
     You can use either hash map or Regex to create a whitelist or blacklist to setup such rules. If the function return true, such page will trigger pageview report, and it will be muted if the function return false.
     Note that the parameter for isTrack() is a location not an url.
 
-7. **Customize pageTrack rule.**  
+8. **Form submit event report**  
+    Since the form element has various way to be created and submitted, implement a universal event listener to track the submit event is neither efficient nor reasonable. Thus, you need to insert a function(sendFormReport(obj)) at where the report is submitted such a report to collector server.
+
+9. **Customize pageTrack rule.**  
    If you only want to trigger pageview event for certain pages, edit the isTrack function in the src/rule.js.  
    isTrack function take document.location as parameters. Implement your own rules and return true if you want this page to be tracked or false if you don't.
    You need to run grunt again after you edit rule.js. 
