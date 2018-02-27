@@ -194,7 +194,7 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
       }else if(type == 'btn') {
         window.snowplow('trackStructEvent', 'button', 'click', el.id, '', '');
       }else if(type == 'video') {
-      window.snowplow('trackStructEvent', 'video', 'play', el.id, el.src, '');
+      window.snowplow('trackStructEvent', 'video', el.pause() ? 'pause':'play', el.id, el.src, '');
       }else {
         //unknown type , just ignore it
         console.log("error: unknown type " + type);
