@@ -155,7 +155,18 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
                     window.innerHeight);
   }
 
-
+  //**********************************************************
+  //
+  // Global Tracker Event Listener function.
+  // If a certain element's id is registered in the config.js,
+  // it will search the setting for such id and submit the report
+  // set in config.js.
+  // Note, for one id, you can only set one type of report.
+  // If you need to bind one id to multiple type reports, The value
+  // of the hash map need to be a array called settings which
+  // stores different kind of setting.
+  //
+  //**********************************************************
   function globalTracker(event) {
     let tId = event.target.id;
     console.log('eventId=' + tId);
@@ -322,6 +333,11 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
   });
 };
 
+//*********************************************************
+//
+// Form submit report event.
+//
+//*********************************************************
 sendFormReport = function(obj) {
   window.snowplow('trackSelfDescribingEvent', obj);
 };
