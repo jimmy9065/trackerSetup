@@ -308,10 +308,10 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
     var elementsLink = document.getElementsByClassName('trackLink');
     for(i=0; i < elementsLink.length; i++){
       elementsLink[i].addEventListener('click', function(event){
-        var target = event.currentTarget;
-        var matcher = new RegExp('\.([a-zA-Z0-9]+)$');
-        var matchs = target.href.match(matcher);
-        var type = 'n/a'
+        let target = event.currentTarget;
+        let matcher = new RegExp('\.([a-zA-Z0-9]+)$');
+        let matchs = target.href.match(matcher);
+        let type = 'n/a'
         if(matchs && matchs[1]){
           type = matchs[1];
           console.log('finished');
