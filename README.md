@@ -47,7 +47,7 @@ This repo is a wrapper for snowplow-js-tracker.
    Current, the global tracker can track three types of event:
     * link : For link type, the target id usually should be pointed to a link elment, because the report will contain the href attribute of the target element.
     * btn : For btn type, the report will only contain the target id.
-    * video :
+    * video : For video type, the report will contain the pause attribute of the target element to the report.
 
 6. **Send the report at any place you want without setting the class name.(you should use 4 instead)**  
     This is the original way for snowplow user to send the tracking report. You can lear more information from this [link](https://github.com/snowplow/snowplow/wiki/2-Specific-event-tracking-with-the-Javascript-tracker).
