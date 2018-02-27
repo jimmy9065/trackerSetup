@@ -238,13 +238,13 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
     window.snowplow('setUserId', getXsyCookie());
   }
 
-  //Enable pageping event tracking
-  window.snowplow('enableActivityTracking', 30, 30);
-  //Enable pageview event tracking.
-  //And send the realtime page height and viewport height with the report
-  //Note the pageview event must be set after the paging ping event.
-  
   if(isTrack(document.location)){
+    //Enable pageping event tracking
+    window.snowplow('enableActivityTracking', 30, 30);
+    //Enable pageview event tracking.
+    //And send the realtime page height and viewport height with the report
+    //Note the pageview event must be set after the paging ping event.
+  
     window.snowplow('trackPageView',null,'',
       function() {
         return {
