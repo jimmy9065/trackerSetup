@@ -43,11 +43,11 @@ The following information need to be provided:
    * trackEnter: Track if the user's mouse is hover on that element or leave it.
    * trackClick: Track if the user click on that element.
    * trackVideo: Track if the user play or pause the video.  
-   * trackLink : Track if the user click on a link.(This is different from trackClick, because it also carries the link's url and the file type)
+   * trackLink : Track if the user click on a link.(This is different from `trackClick()`, because it also carries the link's url and the file type)
 
 ### 5. Use global click tracker.  
    For active webpage, the elements sometimes could be created or removed by ajax. The above methods, however, are designed for static webpage, which created all its elements before the load event is triggered. So in order to track those elements which created afterwards, and also provide some api for the later tagmanager development, one can use the global click tracker. It can track the click event for all those elements that registered under the config.js file.
-   The setup details is in the config file, function 'setupGlobalTracker'. You only need to add content in the 'custom content area'. Also there is a config.example.js file which contains some more specific examples.
+   The setup details is in the config file, function `setupGlobalTracker()`. You only need to add content in the 'custom content area'. Also there is a config.example.js file which contains some more specific examples.
    Current, the global tracker can track three types of event:
    * link : For link type, the target id usually should be pointed to a link elment, because the report will contain the href attribute of the target element.
    * btn : For btn type, the report will only contain the target id.
