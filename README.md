@@ -59,7 +59,7 @@ In default, the function return true for all locations, which means it doesn't h
 You can use either hash map or Regex to create a whitelist or blacklist to setup such rules. If the function return true, such page will trigger pageview report, and it will be muted if the function return false.  
 **Note that the parameter for isTrack() is a location not an url.**
     
-### 7. Send the report at any place you want without setting the class name.(you should use 4 instead)  
+### 7. Send the report at any place you want without setting the class name.(Not Recommend)  
 This is the original way for snowplow user to send the tracking report. You can lear more information from this [link](https://github.com/snowplow/snowplow/wiki/2-Specific-event-tracking-with-the-Javascript-tracker).
     
 ### 8. Form submit event report  
