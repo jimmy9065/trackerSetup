@@ -33,7 +33,7 @@ This repo is a wrapper for snowplow-js-tracker.
       * AppID: An unique ID that is asigned to the client who owns this website.
       
    After inserted the code, the website now could track the pageview event and generate the pageping event every 30s. In the pageping event, there is also the scroll depth information in pageping event report.  
-4. **To track certain event, you need to add certain class names and IDs(if they don't have one) to those element that you want to track.**  
+4. **To track certain event, you need to add the class names and IDs(if they don't have one) to those element that you want to track.**  
    The class name is for the tracker to know what kind of the event the track need to listen for that element. The id is used to tell which element triggered this event.  
    Now we only support following class name:  
       * trackEnter: Track if the user's mouse is hover on that element or leave it.
