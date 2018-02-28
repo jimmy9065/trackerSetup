@@ -53,10 +53,10 @@ The following information need to be provided:
    * btn : For btn type, the report will only contain the target id.
    * video : For video type, the report will contain the pause attribute of the target element to the report.
 
-### 6. Setup whitelist/blacklist for pageview trackers.  
+### 6. Setup pageview rules for tracker.  
 For some cases, you might not need to track all the pages on the websites. In those cases, you can use isTrack() to decide if the page should be tracked.  
-In default, the function return true for all locations, which means it doesn't has any rules on pageview tracking, and it will track all the pages on the website.
-You can use either hash map or Regex to create a whitelist or blacklist to setup such rules. If the function return true, such page will trigger pageview report, and it will be muted if the function return false.  
+The function use RegExp to exam whether this page shoul be tracked. You can add rules by adding clause in the array `rules`. In default, the function return false for all locations, which means it doesn't has any rules on pageview tracking, and it won't track any pages on the website.  
+Also, if you like use other methods, for example: hashTable, to implement the rules, you can change the function as long as it return true for pages that will be tracked and vice versa.  
 **Note that the parameter for isTrack() is a location not an url.**
     
 ### 7. Send the report at any place you want without setting the class name.(Not Recommend)  
