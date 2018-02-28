@@ -3,7 +3,7 @@
 This repo is a wrapper for snowplow-js-tracker.
 
 ## Setup
-1. **Bundle the wrapper files**
+1. **Bundle the wrapper files**  
     Run the following commend(requires node.js environment) to build the wrapper.
     ```
     npm install -g grunt
