@@ -4,7 +4,13 @@
 var isTrack = (location) => {
   console.log("this is add-on js:" + location.pathname);
   //custom content area begin
-  return true;
+  rules = [
+  ]
+  for(idx in rules) {
+    if(rules[idx].test(location))
+      return true;
+  }
+  return false;
   //custom content area end
 }
 

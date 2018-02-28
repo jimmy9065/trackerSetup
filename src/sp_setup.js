@@ -193,7 +193,7 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
         console.log(el);
       }else if(type == 'btn') {
         window.snowplow('trackStructEvent', 'button', 'click', el.id, '', '');
-      }else if(type == 'video') {
+      }else if(type == 'video' && el.nodeName == 'video') {
       window.snowplow('trackStructEvent', 'video', el.pause() ? 'pause':'play', el.id, el.src, '');
       }else {
         //unknown type , just ignore it
@@ -266,6 +266,8 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
 
     //This is for codeless trigger
     document.body.addEventListener('click', globalTracker, event);
+    document.body.addEventListener('play', globalTracker, event);
+    document.body.addEventListener('pause', globalTracker, event);
 
     //If the element has a class name 'trackEnter', the mouseenter and mouseleave
     //event will be listened and a report will be sent if it is triggered.
