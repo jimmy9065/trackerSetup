@@ -40,23 +40,23 @@ The following information need to be provided:
 ### 4. To track certain event, you need to add the class names and IDs(if they don't have one) to those element that you want to track.  
    The class name is for the tracker to know what kind of the event the track need to listen for that element. The id is used to tell which element triggered this event.  
    Now we only support following class name:  
-      * trackEnter: Track if the user's mouse is hover on that element or leave it.
-      * trackClick: Track if the user click on that element.
-      * trackVideo: Track if the user play or pause the video.  
-      * trackLink : Track if the user click on a link.(This is different from trackClick, because it also carries the link's url and the file type)
+   * trackEnter: Track if the user's mouse is hover on that element or leave it.
+   * trackClick: Track if the user click on that element.
+   * trackVideo: Track if the user play or pause the video.  
+   * trackLink : Track if the user click on a link.(This is different from trackClick, because it also carries the link's url and the file type)
 
 ### 5. Use global click tracker.  
    For active webpage, the elements sometimes could be created or removed by ajax. The above methods, however, are designed for static webpage, which created all its elements before the load event is triggered. So in order to track those elements which created afterwards, and also provide some api for the later tagmanager development, one can use the global click tracker. It can track the click event for all those elements that registered under the config.js file.
    The setup details is in the config file, function 'setupGlobalTracker'. You only need to add content in the 'custom content area'. Also there is a config.example.js file which contains some more specific examples.
    Current, the global tracker can track three types of event:
-    * link : For link type, the target id usually should be pointed to a link elment, because the report will contain the href attribute of the target element.
-    * btn : For btn type, the report will only contain the target id.
-    * video : For video type, the report will contain the pause attribute of the target element to the report.
+   * link : For link type, the target id usually should be pointed to a link elment, because the report will contain the href attribute of the target element.
+   * btn : For btn type, the report will only contain the target id.
+   * video : For video type, the report will contain the pause attribute of the target element to the report.
 
 ### 6. Setup whitelist/blacklist for pageview trackers.  
 For some cases, you might not need to track all the pages on the websites. In those cases, you can use isTrack() to decide if the page should be tracked.  
 In default, the function return true for all locations, which means it doesn't has any rules on pageview tracking, and it will track all the pages on the website.
-You can use either hash map or Regex to create a whitelist or blacklist to setup such rules. If the function return true, such page will trigger pageview report, and it will be muted if the function return false.
+You can use either hash map or Regex to create a whitelist or blacklist to setup such rules. If the function return true, such page will trigger pageview report, and it will be muted if the function return false.  
 **Note that the parameter for isTrack() is a location not an url.**
     
 ### 7. Send the report at any place you want without setting the class name.(you should use 4 instead)  
