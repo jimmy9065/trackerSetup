@@ -21,13 +21,17 @@ This repo is a wrapper for snowplow-js-tracker.
       * Path to bundle.js: The url that holds this js file.
       * Path to sp.js: The url that holds the snowplow-js-tracker file(sp.js).
       * Path to the uid server: the GET request for an unique uid using the sp's cookie and appID.
-          The request will be like this:
+          The request will be like this (Note the '/lead?' part is also included):
           ```
           GET UID/Server/lead?isnew=true&cookie=mycookie&tid=111
           ```
-          You need to provide something like this(Note the '/lead?' part is also included):
+          For example, if you provide something like this:
           ```
           'http://myuidserver/lead?'
+          ```
+          Then the request will be look like this:
+          ```
+          'http://myuidserver/lead?isnew=true&cookie=mycookie&tid=111'
           ```
       * Path to the collector server: The server that receives the tracking report.
       * AppID: An unique ID that is asigned to the client who owns this website.
@@ -49,22 +53,17 @@ This repo is a wrapper for snowplow-js-tracker.
     * btn : For btn type, the report will only contain the target id.
     * video : For video type, the report will contain the pause attribute of the target element to the report.
 
-6. **Send the report at any place you want without setting the class name.(you should use 4 instead)**  
-    This is the original way for snowplow user to send the tracking report. You can lear more information from this [link](https://github.com/snowplow/snowplow/wiki/2-Specific-event-tracking-with-the-Javascript-tracker).
-
-7. **Setup whitelist/blacklist for pageview trackers**
+6. **Setup whitelist/blacklist for pageview trackers**  
     For some cases, you might not need to track all the pages on the websites. In those cases, you can use isTrack() to decide if the page should be tracked.  
     In default, the function return true for all locations, which means it doesn't has any rules on pageview tracking, and it will track all the pages on the website.
     You can use either hash map or Regex to create a whitelist or blacklist to setup such rules. If the function return true, such page will trigger pageview report, and it will be muted if the function return false.
     Note that the parameter for isTrack() is a location not an url.
-
+    
+7. **Send the report at any place you want without setting the class name.(you should use 4 instead)**  
+    This is the original way for snowplow user to send the tracking report. You can lear more information from this [link](https://github.com/snowplow/snowplow/wiki/2-Specific-event-tracking-with-the-Javascript-tracker).
+    
 8. **Form submit event report**  
     Since the form element has various way to be created and submitted, implement a universal event listener to track the submit event is neither efficient nor reasonable. Thus, you need to insert a function(sendFormReport(obj)) at where the report is submitted such a report to collector server.
-
-9. **Customize pageTrack rule.**  
-   If you only want to trigger pageview event for certain pages, edit the isTrack function in the src/rule.js.  
-   isTrack function take document.location as parameters. Implement your own rules and return true if you want this page to be tracked or false if you don't.
-   You need to run grunt again after you edit rule.js. 
 
 Other information like the protocal for those report can be found on [snowplow's wiki page](https://github.com/snowplow/snowplow/wiki/snowplow-tracker-protocol).
 
