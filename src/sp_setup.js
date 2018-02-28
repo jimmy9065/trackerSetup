@@ -245,6 +245,7 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
     //And send the realtime page height and viewport height with the report
     //Note the pageview event must be set after the paging ping event.
   
+    //Page view
     window.snowplow('trackPageView',null,'',
       function() {
         return {
@@ -253,9 +254,11 @@ function setupTracker(window,document,spURL,LeadURI,reportSubmitServer,appID) {
         };
       }
     );
+
+    //campaign source
+    window.snowplow('trackSelfDescribingEvent', UTMParser());
   }
 
-  window.snowplow('trackSelfDescribingEvent', UTMParser());
 
   //Configure the tracking of 'trackEnter', 'trackClick' and 'trackVideo' event.
   //Notice the eventlistener only set after the page is loaded(window load event).
